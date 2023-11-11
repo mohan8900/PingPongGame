@@ -34,8 +34,8 @@ In PaddleRight (Negative button - down and positive buttom - up) and paddleLeft(
  
  ## Program:
  ```
-Developed By : DEEPIKA.J
-Register No : 212221230016
+Developed By : A K MOHAN RAJ
+Register No : 212221230064
 ```
  ## GameManager :
  ```
