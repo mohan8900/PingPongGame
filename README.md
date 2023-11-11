@@ -1,6 +1,7 @@
 # PingPongGame
 
 ## Aim:
+To develop a ping pong game using C# program in unity .
 
 
 
@@ -32,8 +33,177 @@ In PaddleRight (Negative button - down and positive buttom - up) and paddleLeft(
  After completing, to move the ball, in the ball inspector give the value for speed
  
  ## Program:
+ ```
+Developed By : DEEPIKA.J
+Register No : 212221230016
+```
+ ## GameManager :
+ ```
+ 
+ 
+ using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
+{
+   public Ball ball;
+   public Paddle paddle;
+   public static Vector2 bottomLeft; // boundry line - origin part 
+   public static Vector2 topRight; // sice 2D we are using vector 2 - two corner
+   void Start()
+   {
+       bottomLeft = Camera.main.ScreenToWorldPoint(new Vector2(0, 0));
+       topRight = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
+
+       Instantiate(ball);
+       Paddle paddle1 = Instantiate(paddle) as Paddle;
+       Paddle paddle2 = Instantiate(paddle) as Paddle;
+       paddle1.Init(true); // right paddle
+       paddle2.Init(false); // left paddle
+   }
+
+   // Update is called once per frame
+   void Update()
+   {
+       
+   }
+}
+```
+
+## Ball :
+```
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Ball : MonoBehaviour
+{
+  [SerializeField]
+   float speed;
+   float radius;
+   Vector2 direction;
+
+   // Start is called before the first frame update
+   void Start()
+   {
+       direction = Vector2.one.normalized;
+       radius = transform.localScale.x / 2; // takes diameter of the ball
+   }
+
+   // Update is called once per frame
+   void Update()
+   {
+       transform.Translate(direction * speed * Time.deltaTime);
+       //bounce off top and bottom
+       if(transform.position.y<GameManager.bottomLeft.y+radius && direction.y<0)
+       {
+           direction.y = -direction.y;
+       }
+       if (transform.position.y > GameManager.topRight.y - radius && direction.y > 0)
+       {
+           direction.y = -direction.y;
+       }
+       //gameover
+       if (transform.position.x < GameManager.bottomLeft.x + radius && direction.x < 0)
+       {
+           Debug.Log("Right Player Wins");
+           Time.timeScale = 0;
+       }
+       if (transform.position.x > GameManager.topRight.x - radius && direction.x > 0)
+       {
+           Debug.Log("Left Player Wins");
+           Time.timeScale = 0;
+       }
+
+   }
+   void OnTriggerEnter2D(Collider2D other)
+   {
+       if(other.tag=="Paddle")
+       {
+           bool isRight = other.GetComponent<Paddle>().isRight;
+           if(isRight==true && direction.x>0)
+           {
+               direction.x = -direction.x;
+           }
+           if (isRight == false && direction.x <0)
+           {
+               direction.x = -direction.x;
+           }
+       }
+   }
+}
+
+```
+## Paddle :
+```
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Paddle : MonoBehaviour
+{
+   [SerializeField]
+    float speed;
+    float height;
+    string input;
+    public bool isRight;
+    // Start is called before the first frame update
+    void Start() // how screen has to look
+    {
+        height = transform.localScale.y;
+        speed = 6f;
+    }
+    public void Init(bool isRightPaddle)
+    {
+        isRight = isRightPaddle;
+        Vector2 pos = Vector2.zero;
+        if(isRightPaddle)
+        {
+            pos = new Vector2(GameManager.topRight.x, 0); // right paddle position
+            pos -= Vector2.right * transform.localScale.x;
+            input = "PaddleRight";
+        }
+        else
+        {
+            pos = new Vector2(GameManager.bottomLeft.x, 0); // left paddle position
+            pos += Vector2.right * transform.localScale.x;
+            input = "PaddleLeft";
+        }
+        transform.position = pos;
+        transform.name = input;
+    }
+    // Update is called once per frame
+    void Update() // movements code will be here
+    {
+        float move = Input.GetAxis(input) * Time.deltaTime * speed;
+        if(transform.position.y<GameManager.bottomLeft.y+height/2 && move<0) // not to move.
+        {
+            move = 0;
+        }
+        if(transform.position.y>GameManager.topRight.y-height/2 && move>0)
+        {
+            move = 0;
+        }
+        transform.Translate(move * Vector2.up); // to move the paddle.
+    }
+}
+
+```
  
  ## Output:
+ ## Ping Pong Game:
+ ![d1](https://github.com/21005688/PingPongGame/assets/94747031/6fbd95d1-d630-40c5-bfce-fe01a3aeaba1)
+
  
+ ## Left Player Wins:
+ ![d2](https://github.com/21005688/PingPongGame/assets/94747031/85a4000a-d7e4-4bfe-ac5f-2ee5dc5a2812)
+
+ 
+ ## Right Player Wins:
+ 
+ ![d3](https://github.com/21005688/PingPongGame/assets/94747031/d7175e0b-5921-4f89-89a3-e643b5eb7853)
+
  ## Result:
+ A ping pong game using C# program is developed in unity successfully.
 
